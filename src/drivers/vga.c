@@ -80,3 +80,13 @@ void vga_print(const char *str) {
     while (*str)
         vga_putchar(*str++);
 }
+
+// Add this function at the bottom of vga.c
+void vga_print_int(int n) {
+    if (n < 0) { vga_putchar('-'); n = -n; }
+    if (n == 0) { vga_putchar('0'); return; }
+    char buf[12];
+    int i = 0;
+    while (n > 0) { buf[i++] = '0' + (n % 10); n /= 10; }
+    while (i--) vga_putchar(buf[i]);  // print digits in reverse
+}

@@ -10,10 +10,18 @@ ASFLAGS = -f elf32
 
 LDFLAGS = -m elf_i386 -T linker.ld
 
-C_SRCS  = src/kernel/kernel.c src/drivers/vga.c
-ASM_SRCS = src/boot/boot.asm
+C_SRCS  = src/kernel/kernel.c \
+          src/kernel/gdt.c    \
+          src/kernel/idt.c    \
+          src/drivers/vga.c   \
+          src/drivers/pic.c   \
+          src/drivers/timer.c \
+          src/drivers/keyboard.c
 
-C_OBJS  = $(C_SRCS:.c=.o)
+ASM_SRCS = src/boot/boot.asm \
+           src/boot/isr_stub.asm
+
+C_OBJS   = $(C_SRCS:.c=.o)
 ASM_OBJS = $(ASM_SRCS:.asm=.o)
 
 KERNEL  = myos.elf
@@ -35,10 +43,10 @@ $(ISO): $(KERNEL)
 	grub-mkrescue -o $(ISO) iso
 
 run: $(ISO)
-	qemu-system-x86_64 -cdrom $(ISO) -m 32M
+	qemu-system-x86_64 -cdrom $(ISO) -m 32M -k en-us
 
 debug: $(ISO)
-	qemu-system-x86_64 -cdrom $(ISO) -m 32M -s -S &
+	qemu-system-x86_64 -cdrom $(ISO) -m 32M -k en-us -s -S &
 	gdb -ex "target remote :1234" -ex "symbol-file $(KERNEL)"
 
 clean:

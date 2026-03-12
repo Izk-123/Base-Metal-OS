@@ -36,3 +36,25 @@ _start:
 .hang:
     hlt                      ; halt
     jmp .hang                ; loop in case of NMI
+
+; Load GDT and reload segment registers
+[GLOBAL gdt_flush]
+gdt_flush:
+    mov eax, [esp+4]   ; get pointer to GDT
+    lgdt [eax]         ; load it
+    mov ax, 0x10       ; 0x10 = kernel data segment offset in GDT
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    jmp 0x08:.flush    ; 0x08 = kernel code segment, far jump reloads CS
+.flush:
+    ret
+
+; Load IDT
+[GLOBAL idt_flush]
+idt_flush:
+    mov eax, [esp+4]
+    lidt [eax]
+    ret
