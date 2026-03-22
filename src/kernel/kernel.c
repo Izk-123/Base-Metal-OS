@@ -1,10 +1,30 @@
-// kernel.c - Updated with interrupts
 #include "../drivers/vga.h"
 #include "../drivers/pic.h"
 #include "../drivers/timer.h"
 #include "../drivers/keyboard.h"
+#include "../proc/process.h"
 #include "gdt.h"
 #include "idt.h"
+
+static void task_a(void) {
+    uint32_t n = 0;
+    while (1) {
+        vga_print("[A=");
+        vga_print_int(n++);
+        vga_print("]");
+        for (volatile uint32_t i = 0; i < 5000000; i++);
+    }
+}
+
+static void task_b(void) {
+    uint32_t n = 0;
+    while (1) {
+        vga_print("[B=");
+        vga_print_int(n++);
+        vga_print("]");
+        for (volatile uint32_t i = 0; i < 5000000; i++);
+    }
+}
 
 void kernel_main(void) {
     vga_clear();
@@ -13,31 +33,25 @@ void kernel_main(void) {
     vga_print("   ELE-OPS-411 Class Project 2026         \n");
     vga_print("===========================================\n\n");
 
-    vga_print("[GDT] Initializing...\n");
-    gdt_init();
-    vga_print("[GDT] OK\n");
+    gdt_init();        vga_print("[GDT] OK\n");
+    idt_init();        vga_print("[IDT] OK\n");
+    pic_init();        vga_print("[PIC] OK\n");
+    scheduler_init();  vga_print("[Scheduler] OK\n");
+    timer_init(100);   vga_print("[Timer] OK\n");
+    keyboard_init();   vga_print("[Keyboard] OK\n");
 
-    vga_print("[IDT] Initializing...\n");
-    idt_init();
-    vga_print("[IDT] OK\n");
+    task_create("task_a", task_a);
+    task_create("task_b", task_b);
+    vga_print("[Tasks] A and B created\n\n");
+    vga_print("Scheduler running:\n");
+    vga_print("------------------\n");
 
-    vga_print("[PIC] Initializing...\n");
-    pic_init();
-    vga_print("[PIC] OK\n");
-
-    vga_print("[Timer] Starting at 100Hz...\n");
-    timer_init(100);
-
-    vga_print("[Keyboard] Ready\n");
-    keyboard_init();
-
-    // Enable interrupts! (was disabled during boot)
     __asm__ volatile ("sti");
-    vga_print("\nInterrupts enabled! Timer dots below:\n");
-    vga_print("Type on keyboard to see input echo:\n\n");
 
-    // Main kernel loop
+    // Idle loop — schedule() is called HERE, outside any IRQ
+    // This is the key fix: context switch never happens inside an IRQ
     while (1) {
-        __asm__ volatile ("hlt"); // sleep until next interrupt
+        schedule();
+        __asm__ volatile ("hlt");
     }
 }

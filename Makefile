@@ -10,16 +10,18 @@ ASFLAGS = -f elf32
 
 LDFLAGS = -m elf_i386 -T linker.ld
 
-C_SRCS  = src/kernel/kernel.c \
-          src/kernel/gdt.c    \
-          src/kernel/idt.c    \
-          src/drivers/vga.c   \
-          src/drivers/pic.c   \
-          src/drivers/timer.c \
-          src/drivers/keyboard.c
+C_SRCS  = src/kernel/kernel.c  \
+          src/kernel/gdt.c     \
+          src/kernel/idt.c     \
+          src/drivers/vga.c    \
+          src/drivers/pic.c    \
+          src/drivers/timer.c  \
+          src/drivers/keyboard.c \
+          src/proc/process.c
 
-ASM_SRCS = src/boot/boot.asm \
-           src/boot/isr_stub.asm
+ASM_SRCS = src/boot/boot.asm    \
+           src/boot/isr_stub.asm \
+           src/proc/switch.asm
 
 C_OBJS   = $(C_SRCS:.c=.o)
 ASM_OBJS = $(ASM_SRCS:.asm=.o)
