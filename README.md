@@ -129,7 +129,7 @@ qemu-system-x86_64 --version   # should print QEMU version
 ### Clone the repository (Promise's machine):
 
 ```bash
-git clone https://github.com/<your-repo-url>/myos.git
+git clone [https://github.com/<your-repo-url>/myos.git](https://github.com/Izk-123/Base-Metal-OS.git)
 cd myos
 ```
 
