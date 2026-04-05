@@ -124,5 +124,13 @@ irq_common:
     sti
     iret
 
+; Syscall interrupt (int 0x80)
+[GLOBAL isr128]
+isr128:
+    cli
+    push dword 0
+    push dword 128
+    jmp isr_common
+
 ; ─── Mark stack as non-executable (silences linker warning) ───────────────────
 section .note.GNU-stack noalloc noexec nowrite progbits

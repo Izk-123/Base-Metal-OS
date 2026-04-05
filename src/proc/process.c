@@ -151,3 +151,14 @@ void task_exit(void) {
 task_t *get_current_task(void) {
     return &tasks[current_task];
 }
+
+// Add these two functions at the very bottom of process.c
+
+task_t *get_task(int i) {
+    if (i < 0 || i >= MAX_TASKS) return &tasks[0];
+    return &tasks[i];
+}
+
+int get_max_tasks(void) {
+    return MAX_TASKS;
+}

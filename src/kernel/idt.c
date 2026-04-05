@@ -43,6 +43,7 @@ extern void irq6(void);  extern void irq7(void);  extern void irq8(void);
 extern void irq9(void);  extern void irq10(void); extern void irq11(void);
 extern void irq12(void); extern void irq13(void); extern void irq14(void);
 extern void irq15(void);
+extern void isr128(void);
 
 extern void idt_flush(uint32_t);
 
@@ -108,6 +109,8 @@ void idt_init(void) {
     idt_set_entry(45, (uint32_t)irq13);
     idt_set_entry(46, (uint32_t)irq14);
     idt_set_entry(47, (uint32_t)irq15);
+    // Syscall gate — must be callable (flags = 0x8E for ring 0)
+    idt_set_entry(0x80, (uint32_t)isr128);
 
     idt_flush((uint32_t)&ip);
 }

@@ -7,20 +7,21 @@ CFLAGS  = -m32 -ffreestanding -fno-builtin -fno-stack-protector \
           -Wall -Wextra -O2
 
 ASFLAGS = -f elf32
-
 LDFLAGS = -m elf_i386 -T linker.ld
 
-C_SRCS  = src/kernel/kernel.c  \
-          src/kernel/gdt.c     \
-          src/kernel/idt.c     \
-          src/drivers/vga.c    \
-          src/drivers/pic.c    \
-          src/drivers/timer.c  \
+C_SRCS  = src/kernel/kernel.c   \
+          src/kernel/gdt.c      \
+          src/kernel/idt.c      \
+          src/kernel/syscall.c  \
+          src/drivers/vga.c     \
+          src/drivers/pic.c     \
+          src/drivers/timer.c   \
           src/drivers/keyboard.c \
-          src/proc/process.c
+          src/proc/process.c    \
+          src/shell/shell.c
 
-ASM_SRCS = src/boot/boot.asm    \
-           src/boot/isr_stub.asm \
+ASM_SRCS = src/boot/boot.asm     \
+           src/boot/isr_stub.asm  \
            src/proc/switch.asm
 
 C_OBJS   = $(C_SRCS:.c=.o)

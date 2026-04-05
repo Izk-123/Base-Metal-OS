@@ -32,5 +32,8 @@ int      task_create(const char *name, void (*entry)(void));
 void     schedule(uint32_t current_esp);   // called from timer IRQ
 void     task_exit(void);
 task_t  *get_current_task(void);
+// Add these before #endif in process.h
+task_t  *get_task(int i);
+int      get_max_tasks(void);
 
 #endif
