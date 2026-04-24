@@ -261,4 +261,3 @@ Building a working OS from scratch reinforced the importance of **precision, deb
 
 > *“Understanding an operating system begins when you build one.”*
 
-Just say the word 👍
